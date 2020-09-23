@@ -1,0 +1,237 @@
+openapi: 3.0.1
+info:
+  title: localhost:8080/
+  description: adventure land api
+  version: ${api_version}
+servers:
+  - url: localhost:8080/
+    description: ${server_description}
+  - url: https://${domain_name}/${api_stage}
+    description: ${server_description}
+paths:
+
+# User
+  /api/user:
+    post:
+      tags:
+        - User
+      description: Create user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUser"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateUserSuccess"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerErrorResponse"
+  /api/user/{id}/rank:
+    get:
+      tags:
+        - User
+      description: User's Rank
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "8ad1b76d-aa5c-4e53-b3a1-640f9d214ee4"
+          description: user id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRank"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerErrorResponse"
+  /api/user/{id}/reward:
+    post:
+      tags:
+        - User
+      description: Add Points
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "8ad1b76d-aa5c-4e53-b3a1-640f9d214ee4"
+          description: user id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RewardPoints"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerErrorResponse"
+  
+  /api/ranks:
+    get:
+      tags:
+        - User
+      description: List Users Rank-Wise
+      parameters:
+        - in: query
+          name: limit
+          required: true
+          schema:
+            type: integer
+            example: 10
+          description: item limit per page
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserList"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerErrorResponse"
+  
+
+components:
+  schemas:
+  # General
+    BadRequestResponse:
+      type: object
+      items:
+         properties:
+          error:
+            type: string
+            example: "something went wrong"
+      example: {
+        "error": "something went wrong"
+      }
+    ServerErrorResponse:
+      type: object
+      items:
+         properties:
+          error:
+            type: string
+            example: "server error message"
+      example: {
+        "error": "server error message"
+      }
+     
+  # User
+    CreateUser:
+      example: {
+          "name": "shubham"
+      }
+    CreateUserSuccess:
+      example: {
+            "id": "01a68984-7b4d-4c43-87fa-2e56f702e790",
+            "name": "shubham",
+            "points": 0
+        }
+    UserRank:
+      example: {
+          "rank": 2
+      }
+    RewardPoints: 
+      example: {
+            "message": "successfully added",
+            "totalPoints": 10
+        }
+    UserList:
+      example: {
+          "limit": 3,
+          "users": [
+              {
+                  "id": "686fac9c-1b38-4768-8d60-9da773264a4b",
+                  "name": "sagar",
+                  "points": 20
+              },
+              {
+                  "id": "dcace9fb-f71b-405e-b111-3711020ee4f3",
+                  "name": "shubham",
+                  "points": 10
+              },
+              {
+                  "id": "8ad1b76d-aa5c-4e53-b3a1-640f9d214ee4",
+                  "name": "vishal",
+                  "points": 0
+              }
+          ]
+      }
+        
+  headers:
+      X-Requested-With:
+        description: CORS origin sites allowed
+        style: simple
+        explode: false
+        schema:
+          type: string
+      Access-Control-Allow-Origin:
+        description: CORS origin sites allowed
+        style: simple
+        explode: false
+        schema:
+          type: string
+      Access-Control-Allow-Methods:
+        description: CORS http methods allows
+        style: simple
+        explode: false
+        schema:
+          type: string
+      Access-Control-Allow-Headers:
+        description: CORS request headers allowed
+        style: simple
+        explode: false
+        schema:
+          type: string
+  securitySchemes:
+    api_key:
+      in: header
+      name: x-api-key
+      type: apiKey

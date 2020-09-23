@@ -20,6 +20,11 @@
     * get user's rank
 
 
+# Start the api server
+
+    $ go run main.go
+
+
 # Api documention
 
     find the swagger documentation for restful api at dir. specs/swagger/api.yaml
